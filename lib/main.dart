@@ -15,7 +15,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'CoinGecko Scraper',
       theme: appTheme(),
-      home: const MyHomePage(title: 'CoinGecko Scraper Page'),
+      home: const MyHomePage(title: 'CoinGecko Scraper'),
     );
   }
 }
