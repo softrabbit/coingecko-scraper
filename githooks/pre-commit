@@ -6,5 +6,12 @@
 
 cd $(git rev-parse --show-toplevel)
 
-cp -a build/web/* docs/
-git add docs
+if grep -q '<base href="/">' build/web/index.html 
+then
+    echo "/docs not added to commit, to refresh build with:"
+    echo "   flutter build web --release --base-href '/coingecko-scraper/'"
+else
+    rm -rf docs/*
+    cp -a build/web/* docs/
+    git add docs
+fi
