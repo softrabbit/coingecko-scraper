@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'package:coingecko_scraper/services/scraper.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -11,11 +12,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DateTimeRange? _when = null;
+  DateTimeRange? _when;
   String _dateRange = "Press the button to set date range.";
-  String _bearish = "";
-  String _highestVolume = "";
+  final String _bearish = "";
+  final String _highestVolume = "";
   String _optimalDates = "";
+  CoinGeckoConnector conn = CoinGeckoConnector();
 
   String _toDateString(DateTime dt) {
     return dt.year.toString() +
@@ -32,10 +34,13 @@ class _MyHomePageState extends State<MyHomePage> {
         firstDate: DateTime(2009, 1, 1), // Bitcoin released 2009-01-03
         lastDate: DateTime.now());
     if (pickedRange != null && pickedRange != _when) {
+      String response =
+          await conn.getMarketChartRange("bitcoin", "eur", pickedRange);
       setState(() {
         _when = pickedRange;
         _dateRange =
             _toDateString(_when!.start) + " - " + _toDateString(_when!.end);
+        _optimalDates = response.substring(0, 40) + " ...";
       });
     }
   }
@@ -73,17 +78,17 @@ class _MyHomePageState extends State<MyHomePage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Text(
-              '$_dateRange',
+              _dateRange,
               style: Theme.of(context).textTheme.headline5,
             ),
             Text(
-              '$_bearish',
+              _bearish,
             ),
             Text(
-              '$_highestVolume',
+              _highestVolume,
             ),
             Text(
-              '$_optimalDates',
+              _optimalDates,
             ),
           ],
         ),
