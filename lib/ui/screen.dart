@@ -11,36 +11,38 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  DateTimeRange? when = null;
+  DateTimeRange? _when = null;
+  String _dateRange = "Press the button to set date range.";
+  String _bearish = "";
+  String _highestVolume = "";
+  String _optimalDates = "";
+
+  String _toDateString(DateTime dt) {
+    return dt.year.toString() +
+        "-" +
+        dt.month.toString().padLeft(2, '0') +
+        "-" +
+        dt.day.toString().padLeft(2, '0');
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTimeRange? pickedRange = await showDateRangePicker(
-        initialDateRange: when,
+        initialDateRange: _when,
         context: context,
-        firstDate: DateTime(2009, 1, 1),
+        firstDate: DateTime(2009, 1, 1), // Bitcoin released 2009-01-03
         lastDate: DateTime.now());
-    if (pickedRange != null && pickedRange != when) {
+    if (pickedRange != null && pickedRange != _when) {
       setState(() {
-        when = pickedRange;
+        _when = pickedRange;
+        _dateRange =
+            _toDateString(_when!.start) + " - " + _toDateString(_when!.end);
       });
     }
   }
 
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
+    // This method is rerun every time setState is called.
     // The Flutter framework has been optimized to make rerunning build methods
     // fast, so that you can just rebuild anything that needs updating rather
     // than having to individually change instances of widgets.
@@ -70,20 +72,27 @@ class _MyHomePageState extends State<MyHomePage> {
           // horizontal).
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            const Text(
-              'Press the plus button to select date range.',
+            Text(
+              '$_dateRange',
+              style: Theme.of(context).textTheme.headline5,
             ),
             Text(
-              '',
-              style: Theme.of(context).textTheme.headline4,
+              '$_bearish',
+            ),
+            Text(
+              '$_highestVolume',
+            ),
+            Text(
+              '$_optimalDates',
             ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () => _selectDate(context),
         tooltip: 'Set date range',
-        child: const Icon(Icons.add),
+        // child: const Text('Set range'),
+        label: const Text('Set range'),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
