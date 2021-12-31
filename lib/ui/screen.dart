@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:coingecko_scraper/services/scraper.dart';
+import 'package:intl/intl.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -54,7 +55,8 @@ class _MyHomePageState extends State<MyHomePage> {
             "${response["longestBearish"][1]} days";
         _highestVolume = "Highest trading volume: " +
             "${_toDateString(response["maxVolume"][0])}, " +
-            "${response["maxVolume"][1]} ${_currency}";
+            NumberFormat.currency(locale: 'eu', name: _currency)
+                .format(response["maxVolume"][1]);
         _optimalDates = response["optimalDates"].length == 0
             ? "Trading in this period not advisable."
             : "Buy low: ${_toDateString(response["optimalDates"][0])}, " +
@@ -96,15 +98,18 @@ class _MyHomePageState extends State<MyHomePage> {
             Text(
               _optimalDates,
             ),
+            SizedBox(
+              height: 100,
+            ),
+            FloatingActionButton.extended(
+              onPressed: () => _selectDate(context),
+              tooltip: 'Set date range',
+              // child: const Text('Set range'),
+              label: const Text('Set range'),
+            ),
           ],
         ),
       ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () => _selectDate(context),
-        tooltip: 'Set date range',
-        // child: const Text('Set range'),
-        label: const Text('Set range'),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
