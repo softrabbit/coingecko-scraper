@@ -86,8 +86,6 @@ class numberCruncher {
     // the local minimum before the maximum will be what we need?
     // If neither of those are found the whole range should be bearish.
     for (int i = 1; i < data.length; i++) {
-      //print(
-      //    "${DateTime.fromMillisecondsSinceEpoch(data[i][0], isUtc: true)}: ${data[i][1]}");
       if (data[i][1] > max) {
         maxidx = i;
         max = data[i][1];
@@ -110,7 +108,7 @@ class numberCruncher {
     num local_max = min;
     int local_maxidx = 0;
     for (int i = minidx + 1; i < data.length; i++) {
-      if (data[i][1] < local_max) {
+      if (data[i][1] > local_max) {
         local_max = data[i][1];
         local_maxidx = i;
       }
