@@ -34,14 +34,24 @@ class _MyHomePageState extends State<MyHomePage> {
         firstDate: DateTime(2009, 1, 1), // Bitcoin released 2009-01-03
         lastDate: DateTime.now());
     if (pickedRange != null && pickedRange != _when) {
-      String response =
-          await conn.getMarketChartRange("bitcoin", "eur", pickedRange);
       setState(() {
         _when = pickedRange;
         _dateRange =
             _toDateString(_when!.start) + " - " + _toDateString(_when!.end);
-
-        _optimalDates = response;
+        _bearish = '';
+        _highestVolume = '';
+        _optimalDates = '';
+      });
+      Map response =
+          await conn.getMarketChartRange("bitcoin", "eur", pickedRange);
+      print(response);
+      setState(() {
+        _bearish = "Longest bearish: " +
+            "${_toDateString(response["longestBearish"][0])}, " +
+            "${response["longestBearish"][1]} days";
+        _highestVolume = "Highest volume: " +
+            "${_toDateString(response["maxVolume"][0])}, " +
+            "${response["maxVolume"][1]} EUR";
       });
     }
   }
