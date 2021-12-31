@@ -34,6 +34,7 @@ class _MyHomePageState extends State<MyHomePage> {
         firstDate: DateTime(2009, 1, 1), // Bitcoin released 2009-01-03
         lastDate: DateTime.now());
     if (pickedRange != null && pickedRange != _when) {
+      // TODO: add progressindicator while loading
       setState(() {
         _when = pickedRange;
         _dateRange =
@@ -46,12 +47,16 @@ class _MyHomePageState extends State<MyHomePage> {
           await conn.getMarketChartRange("bitcoin", "eur", pickedRange);
       print(response);
       setState(() {
-        _bearish = "Longest bearish: " +
+        _bearish = "Longest bearish period: " +
             "${_toDateString(response["longestBearish"][0])}, " +
             "${response["longestBearish"][1]} days";
-        _highestVolume = "Highest volume: " +
+        _highestVolume = "Highest trading volume: " +
             "${_toDateString(response["maxVolume"][0])}, " +
             "${response["maxVolume"][1]} EUR";
+        _optimalDates = response["optimalDates"].length == 0
+            ? "Trading in this period not advisable."
+            : "Buy low: ${_toDateString(response["optimalDates"][0])}, " +
+                "Sell high: ${_toDateString(response["optimalDates"][1])}";
       });
     }
   }
