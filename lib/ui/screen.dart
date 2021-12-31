@@ -17,6 +17,9 @@ class _MyHomePageState extends State<MyHomePage> {
   String _bearish = "";
   String _highestVolume = "";
   String _optimalDates = "";
+  // These two could come from some kind of selection widget
+  final String _coin = "bitcoin";
+  final String _currency = "eur";
   CoinGeckoConnector conn = CoinGeckoConnector();
 
   String _toDateString(DateTime dt) {
@@ -44,15 +47,14 @@ class _MyHomePageState extends State<MyHomePage> {
         _optimalDates = '';
       });
       Map response =
-          await conn.getMarketChartRange("bitcoin", "eur", pickedRange);
-      print(response);
+          await conn.getMarketChartRange(_coin, _currency, pickedRange);
       setState(() {
         _bearish = "Longest bearish period: " +
             "${_toDateString(response["longestBearish"][0])}, " +
             "${response["longestBearish"][1]} days";
         _highestVolume = "Highest trading volume: " +
             "${_toDateString(response["maxVolume"][0])}, " +
-            "${response["maxVolume"][1]} EUR";
+            "${response["maxVolume"][1]} ${_currency}";
         _optimalDates = response["optimalDates"].length == 0
             ? "Trading in this period not advisable."
             : "Buy low: ${_toDateString(response["optimalDates"][0])}, " +
