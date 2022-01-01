@@ -76,50 +76,23 @@ class numberCruncher {
   // In: List<[DateTime, price]> (in ascending order)
   // Out: [DateTime buy, DateTime sell] or [] if entire period is bearish
   static List getOptimalTradeDates(List data) {
-    num max = data[0][1];
-    num min = data[0][1];
-    int maxidx = 0;
-    int minidx = 0;
+    List minPoint = data[0];
+    List profitRange = [0, 0];
+    num maxProfit = 0;
 
-    // If maximum price occurs after the minimum, those are the optimal times.
-    // Otherwise the local maximum after the minimum or vice versa,
-    // the local minimum before the maximum will be what we need?
-    // If neither of those are found the whole range should be bearish.
     for (int i = 1; i < data.length; i++) {
-      if (data[i][1] > max) {
-        maxidx = i;
-        max = data[i][1];
-      } else if (data[i][1] < min) {
-        minidx = i;
-        min = data[i][1];
+      if (data[i][1] - minPoint[1] > maxProfit) {
+        maxProfit = data[i][1] - minPoint[1];
+        profitRange = [minPoint[0], data[i][0]];
+      }
+      if (data[i][1] < minPoint[1]) {
+        minPoint = data[i];
       }
     }
-    if (minidx < maxidx) {
-      return ([data[minidx][0], data[maxidx][0]]);
+    if (profitRange[0] == 0) {
+      return [];
+    } else {
+      return profitRange;
     }
-    num local_min = max;
-    int local_minidx = 0;
-    for (int i = 0; i < maxidx; i++) {
-      if (data[i][1] < local_min) {
-        local_min = data[i][1];
-        local_minidx = i;
-      }
-    }
-    num local_max = min;
-    int local_maxidx = 0;
-    for (int i = minidx + 1; i < data.length; i++) {
-      if (data[i][1] > local_max) {
-        local_max = data[i][1];
-        local_maxidx = i;
-      }
-    }
-    if (max - local_min > local_max - min) {
-      return ([data[local_minidx][0], data[maxidx][0]]);
-    } else if (max - local_min < local_max - local_min) {
-      return ([data[minidx][0], data[local_maxidx][0]]);
-    }
-    // Otherwise, max == local_min && min == local_max -> no locals found,
-    // i.e. bearish trend all the way.
-    return [];
   }
 }
